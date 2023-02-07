@@ -66,3 +66,11 @@ Which worker gets which tasks? Worker 1 get tasks 1 and 3, and worker 2 gets tas
 5. To run: run the worker version 3 file twice (creating two workers) then run emiiter version 3 to send tasks the from the tasks file. 
 
 See a running example with at least 3 concurrent process windows here:
+![1 producer 2 consumers](https://user-images.githubusercontent.com/111606778/217388444-9ea52582-5538-4e47-8dbc-602d3634f4b7.png)
+
+Version 1:
+![v1](https://user-images.githubusercontent.com/111606778/217388520-b47a42ff-b92f-40f0-8f82-cd42694227c7.png)
+
+Version 2: 
+![v2](https://user-images.githubusercontent.com/111606778/217388554-37944642-cf2c-4398-86d2-302114fbc180.png)
+
