@@ -1,4 +1,6 @@
 """
+Edited by Samantha Cress
+Date: February 6, 2023
 
 Creates and sends a task message to the queue each execution.
 This process runs and finishes. 
@@ -34,13 +36,13 @@ channel = connection.channel()
 # a durable queue will survive a RabbitMQ server restart
 # and help ensure messages are processed in order
 # messages will not be deleted until the consumer acknowledges
-channel.queue_declare(queue="task_queue", durable=True)
+channel.queue_declare(queue="task1", durable=True)
 # create a message by joining the command line arguments
-message = " ".join(sys.argv[1:]) or "First task..."
+message = " ".join(sys.argv[1:]) or "Last Task for now......."
 # publish the message to the queue
 channel.basic_publish(
     exchange="",
-    routing_key="task_queue",
+    routing_key="task1",
     body=message,
     properties=pika.BasicProperties(delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE),
 )

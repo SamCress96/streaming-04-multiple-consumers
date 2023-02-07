@@ -1,23 +1,18 @@
 """
+Edited by Samantha Cress
+Date: February 6, 2023
 
 Listens for task messages on the queue.
 This process runs continously. 
-
 Make as many listening workers as you need 
 (start this process in multiple terminals).
-
 Approach
 ---------
 Work Queues - one task producer / many workers sharing work.
-
-
 Terminal Reminders
 ------------------
-
 - Use Control c to close a terminal and end a process.
-
 - Use the up arrow to get the last command executed.
-
 """
 
 import pika
@@ -52,7 +47,7 @@ def listen_for_tasks():
     # a durable queue will survive a RabbitMQ server restart
     # and help ensure messages are processed in order
     # messages will not be deleted until the consumer acknowledges    
-    ch.queue_declare(queue="task_queue", durable=True)
+    ch.queue_declare(queue="task1", durable=True)
     print(" [*] Ready for work. To exit press CTRL+C")
 
     # The QoS level controls the # of messages 
@@ -68,7 +63,7 @@ def listen_for_tasks():
     # configure the channel to listen on a specific queue,  
     # use the callback function named callback,
     # and do not auto-acknowledge the message (let the callback handle it)
-    ch.basic_consume(queue="task_queue", on_message_callback=callback)
+    ch.basic_consume(queue="task1", on_message_callback=callback)
 
     # start consuming messages via the communication channel
     ch.start_consuming()

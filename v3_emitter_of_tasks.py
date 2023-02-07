@@ -1,32 +1,40 @@
 """
     This program sends a message to a queue on the RabbitMQ server.
-    Make tasks harder/longer-running by adding dots at the end of the message.
-    Author: Denise Case
-    Edited by Samantha Cress
-    Date: February 6, 2023
+    It gets the message by reading from a csv file. Sends a line from the csv file every two seconds. 
+   
+
+    Author: Samantha Cress
+    Based on code by Dr. Denise Case
+    Date: Febuary 6, 2023
+
 """
 
 import pika
 import sys
 import webbrowser
+import csv
+import time
 
-def offer_rabbitmq_admin_site():
+def offer_rabbitmq_admin_site(show_offer):
     """Offer to open the RabbitMQ Admin website"""
-    ans = input("Would you like to monitor RabbitMQ queues? y or n ")
-    print()
-    if ans.lower() == "y":
-        webbrowser.open_new("http://localhost:15672/#/queues")
+    if show_offer == True:
+        ans = input("Would you like to monitor RabbitMQ queues? y or n ")
         print()
+        if ans.lower() == "y":
+            webbrowser.open_new("http://localhost:15672/#/queues")
+            print()
 
 def send_message(host: str, queue_name: str, message: str):
     """
     Creates and sends a message to the queue each execution.
     This process runs and finishes.
+
     Parameters:
         host (str): the host name or IP address of the RabbitMQ server
         queue_name (str): the name of the queue
         message (str): the message to be sent to the queue
     """
+    queue_name = "Task"
 
     try:
         # create a blocking connection to the RabbitMQ server
@@ -55,12 +63,27 @@ def send_message(host: str, queue_name: str, message: str):
 # without executing the code below.
 # If this is the program being run, then execute the code below
 if __name__ == "__main__":  
-    # ask the user if they'd like to open the RabbitMQ Admin site
-    offer_rabbitmq_admin_site()
-    # get the message from the command line
-    # if no arguments are provided, use the default message
-    # use the join method to convert the list of arguments into a string
-    # join by the space character inside the quotes
-    message = " ".join(sys.argv[1:]) or "Fourth task....."
-    # send the message to the queue
-    send_message("localhost","task_queue2",message)
+# set host and queue
+    host = "localhost"
+    queue_name = "Task"
+    offer_rabbitmq_admin_site(False)
+
+    # set input file
+    input_file = 'tasks.csv'
+
+    # open the input file and read in a row of data
+    with open(input_file, 'r') as file:
+        reader = csv.reader(file, delimiter=",")      
+        for row in reader:
+
+            # use an fstring to create a message from our data
+            fstring_message = f"{row}"
+
+            # prepare a binary (1s and 0s) message to stream
+            MESSAGE = fstring_message.encode()
+    
+            # send the message
+            send_message(host, queue_name, MESSAGE)
+
+            # sleep for a second
+            time.sleep(2)

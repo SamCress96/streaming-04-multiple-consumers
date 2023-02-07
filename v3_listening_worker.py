@@ -1,9 +1,11 @@
 """
     This program listens for work messages contiously. 
     Start multiple versions to add more workers.  
-    Author: Denise Case
-    Edited by Samantha Cress
+
+    Author: Samantha Cress
+    Based on code by Dr. Denise Case
     Date: February 6, 2023
+
 """
 
 import pika
@@ -15,17 +17,13 @@ def callback(ch, method, properties, body):
     """ Define behavior on getting a message."""
     # decode the binary message body to a string
     print(f" [x] Received {body.decode()}")
-    # simulate work by sleeping for the number of dots in the message
-    time.sleep(body.count(b"."))
-    # when done with task, tell the user
-    print(" [x] Done.")
-    # acknowledge the message was received and processed 
-    # (now it can be deleted from the queue)
-    ch.basic_ack(delivery_tag=method.delivery_tag)
+    time.sleep(body.count(b'.'))
+    print(" [x] Done")
+    
 
 
 # define a main function to run the program
-def main(hn: str = "localhost", qn: str = "task_queue"):
+def main(hn: str = "localhost", qn: str = "Task"):
     """ Continuously listen for task messages on a named queue."""
 
     # when a statement can go wrong, use a try-except block
@@ -51,7 +49,7 @@ def main(hn: str = "localhost", qn: str = "task_queue"):
         # a durable queue will survive a RabbitMQ server restart
         # and help ensure messages are processed in order
         # messages will not be deleted until the consumer acknowledges
-        channel.queue_declare(queue=qn, durable=True)
+        channel.queue_declare(queue= 'Task', durable=True)
 
         # The QoS level controls the # of messages
         # that can be in-flight (unacknowledged by the consumer)
@@ -66,7 +64,7 @@ def main(hn: str = "localhost", qn: str = "task_queue"):
         # configure the channel to listen on a specific queue,  
         # use the callback function named callback,
         # and do not auto-acknowledge the message (let the callback handle it)
-        channel.basic_consume( queue=qn, on_message_callback=callback)
+        channel.basic_consume( queue= 'Task', on_message_callback=callback)
 
         # print a message to the console for the user
         print(" [*] Ready for work. To exit press CTRL+C")
@@ -93,6 +91,7 @@ def main(hn: str = "localhost", qn: str = "task_queue"):
 # This allows us to import this module and use its functions
 # without executing the code below.
 # If this is the program being run, then execute the code below
+
 if __name__ == "__main__":
-    # call the main function with the information needed
-    main("localhost", "task_queue2")
+    
+    main("localhost")
